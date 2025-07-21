@@ -5,26 +5,9 @@ import numpy as np
 import openai
 import faiss
 
-from dotenv import load_dotenv
 from utils import parse_pdf, chunk_text
+from config import EMBEDDING_MODEL, FAISS_INDEX_PATH, CHUNK_STORE_PATH, PDF_FILE_PATH
 from prompt import PROMPT_TEMPLATE
-
-
-load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
-
-if not openai.api_key:
-    # 에러 메시지를 출력하고 종료
-    raise ValueError("OPENAI_API_KEY 환경변수를 찾을 수 없습니다. .env 파일을 확인하세요.")
-
-PDF_FILE_PATH = "data/whitepaper_Foundational Large Language models & text gen.pdf"
-FAISS_INDEX_PATH = "index/vector_store.faiss"
-CHUNK_STORE_PATH = "index/chunks.pkl"
-
-CHUNK_SIZE = 1000
-CHUNK_OVERLAP = 100
-EMBEDDING_MODEL = "text-embedding-3-small"
-GPT_MODEL = "gpt-4o-mini"
 
 faiss_index = None
 chunk_texts = []
@@ -37,14 +20,9 @@ def setup_document_store_faiss():
 	global faiss_index, chunk_texts
 	
 	if os.path.exists(FAISS_INDEX_PATH) and os.path.exists(CHUNK_STORE_PATH):
-		print()
-		
 		faiss_index = faiss.read_index(FAISS_INDEX_PATH)
-		
 		with open(CHUNK_STORE_PATH, "rb") as f:
 			chunk_texts = pickle.load(f)
-
-		print()
 		return
 
 	print("--- 1. 문서 처리 및 FAISS 인덱스 생성 시작 ---")
@@ -53,7 +31,7 @@ def setup_document_store_faiss():
 		return
 
 	raw_text = parse_pdf(PDF_FILE_PATH)
-	chunk_texts = chunk_text(raw_text, CHUNK_SIZE, CHUNK_OVERLAP)
+	chunk_texts = chunk_text(raw_text)
 	print(f"{len(chunk_texts)}개의 텍스트 조각으로 분할 완료")
 
 	print("임베딩 생성 및 저장 중...")
@@ -87,7 +65,7 @@ def find_relevant_chunks(question: str, top_k: int = 5) -> list[str]:
 	return [chunk_texts[i] for i in indices[0]]
 
 def answer_with_gpt(question: str, relevant_chunks: list[str]) -> str:
-	print(f"\n--- 3. {GPT_MODEL}를 통해 답변 생성 ---")
+	print(f"\n--- 3. 답변 생성 ---")
 
 	context = "\n\n".join(relevant_chunks)
 	system_prompt = PROMPT_TEMPLATE.format(context=context)
@@ -103,9 +81,9 @@ def answer_with_gpt(question: str, relevant_chunks: list[str]) -> str:
 
 	try:
 		response = openai.chat.completions.create(
-		model=GPT_MODEL,
-		messages=messages,
-		temperature=0.0
+      model="gpt-4.1-nano",
+      messages=messages,
+      temperature=0.0
 		)
 		return response.choices[0].message.content
 	except Exception as e:
