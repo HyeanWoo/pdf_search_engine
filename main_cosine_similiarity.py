@@ -49,16 +49,13 @@ def setup_document_store():
 	print(f"{len(chunks)}개의 텍스트 조각으로 분할 완료")
 
 	print("임베딩 생성 및 저장 중...")
-	temp_store = []
-	for i, chunk in enumerate(chunks):
-		embedding = get_embedding(chunk)
-		temp_store.append({
-			"text": chunk,
-			"embedding": np.array(embedding)
-		})
-		print(f"  - {i+1}/{len(chunks)} 번째 조각 임베딩 완료")
+	response = openai.embeddings.create(input=chunks, model=EMBEDDING_MODEL)
+	embeddings = [res.embedding for res in response.data]
 
-	document_store = temp_store
+	document_store = [
+		{"text": chunk, "embedding": np.array(embedding)}
+		for chunk, embedding in zip(chunks, embeddings)
+	]
 
 	print(f"\n--- 생성된 벡터 스토어를 파일에 저장: {VECTOR_STORE_PATH} ---")
 	os.makedirs(os.path.dirname(VECTOR_STORE_PATH), exist_ok=True)
