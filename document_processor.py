@@ -8,14 +8,19 @@ def parse_pdf(file_path: str) -> str:
   doc.close()
   return text
 
-def chunk_text(text: str, chunk_size: int = 1000, overlap: int = 100) -> list[str]:
+def chunk_text(text: str, chunk_size: int = 512, overlap: int = 32) -> list[str]:
   if (chunk_size <= overlap):
-    raise ValueError("chunk_size should bigger than overlap")
+    raise ValueError("chunk_size should bigger than overlap.")
   
+  words = text.split()
   chunks = []
   start = 0
-  while start < len(text):
+  offset = chunk_size - overlap
+
+  while start < len(words):
     end = start + chunk_size
-    chunks.append(text[start:end])
-    start += chunk_size - overlap
+    chunk = " ".join(words[start:end])
+    chunks.append(chunk)
+    start += offset
+
   return chunks
