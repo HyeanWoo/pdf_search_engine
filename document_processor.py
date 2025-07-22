@@ -3,6 +3,9 @@ import os
 import pymupdf
 
 def parse_pdf(file_path: str) -> str:
+  """
+  file_path에 있는 PDF 문서를 확인 후 텍스트를 파싱하여 추출합니다.
+  """
   if not os.path.exists(file_path):
     print(f"Error: '{file_path}' File not found.")
     return
@@ -15,6 +18,9 @@ def parse_pdf(file_path: str) -> str:
   return text
 
 def chunk_text(text: str, chunk_size: int = 256, overlap: int = 38) -> list[str]:
+  """
+  주어진 text를 특정 단위의 청크로 분리합니다.
+  """
   if (chunk_size <= overlap):
     raise ValueError("chunk_size should bigger than overlap.")
   
