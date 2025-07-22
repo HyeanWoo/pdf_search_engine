@@ -5,8 +5,9 @@ import numpy as np
 import faiss
 
 from gpt_handler import get_embedding
+from typing import Optional
 
-def build_index(texts: list[str]):
+def build_index(texts: list[str]) -> tuple[faiss.Index, list[str]]:
   response = get_embedding(texts)
   embeddings = [res.embedding for res in response.data]
   embedding_matrix = np.array(embeddings).astype("float32")
@@ -23,7 +24,7 @@ def save_index(faiss_index: faiss.Index, chunk_texts: list[str], index_path: str
   with open(chunk_path, "wb") as f:
     pickle.dump(chunk_texts, f)
 
-def load_index(index_path: str, chunk_path: str):
+def load_index(index_path: str, chunk_path: str) -> tuple[Optional[faiss.Index], list[str]]:
   if os.path.exists(index_path) and os.path.exists(chunk_path):
     faiss_index = faiss.read_index(index_path)
 
@@ -31,6 +32,8 @@ def load_index(index_path: str, chunk_path: str):
       chunk_texts = pickle.load(f)
 
     return faiss_index, chunk_texts
+		
+  return None, None
   
 def retrieve_relevant_chunks(
     question: str, 
