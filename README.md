@@ -1,19 +1,19 @@
 # 문서 기반 질의응답 시스템
 
-이 프로젝트는 PDF 문서를 파싱하고, ChatGPT API와 FAISS를 이용하여 문서 내용에 기반한 답변을 출력하는 시스템입니다.
+이 프로젝트는 PDF 문서를 파싱하고, OpenAI API와 Faiss를 이용하여 문서 내용에 기반한 답변을 출력하는 시스템입니다.
 
 ## 주요 기능
 
 - PDF 문서 파싱: PDF 파일의 텍스트를 추출합니다.
-- 텍스트 임베딩 및 벡터 검색: OpenAI Embedding API와 FAISS를 사용하여 벡터 기반 문서에서 관련 정보를 검색합니다.
+- 텍스트 임베딩 및 벡터 검색: OpenAI Embedding API와 Faiss를 사용하여 벡터 기반 문서에서 관련 정보를 검색합니다.
 - 문서 기반 답변 생성: OpenAI chat API를 사용하여 검색된 내용을 기반으로 답변을 생성합니다.
 - 캐싱 기능: 임베딩 처리한 문서의 인덱스를 저장하여 불필요한 API 호출을 방지합니다.
 
 ## 실행 방법
 
-### 사전 요구사항
+#### 사전 요구사항
 
-- **Python 3.8 이상**
+- Python 3.8 이상
 
 #### 1. 프로젝트 클론
 
@@ -41,7 +41,7 @@ pip install -r requirements.txt
 2. `OPENAI_API_KEY`항목을 만들고 본인의 OpenAI API를 입력합니다.
 
 ```
-OPENAI_API_KEY="[OpenAI API key]"
+OPENAI_API_KEY={your OpenAI API key}
 ```
 
 #### 5. 실행
@@ -90,7 +90,7 @@ doc-qa-project/
 - `chunk_size`는 PDF 문서의 페이지당 평균값에 가까운 256으로 설정했습니다.
 - 맥락이 누락되는 것을 방지하기위해 15% 정도의 `overlap`을 두었습니다.
 
-### 사용 라이브러리
+#### 사용 라이브러리
 
 - PyMuPDF
 - OpenAI
