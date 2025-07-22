@@ -1,6 +1,12 @@
+import os
+
 import pymupdf
 
 def parse_pdf(file_path: str) -> str:
+  if not os.path.exists(file_path):
+    print(f"Error: '{file_path}' File not found.")
+    return
+		
   doc = pymupdf.open(file_path)
   text = ""
   for page in doc:
