@@ -12,5 +12,5 @@ PDF_FILE_PATH = "data/whitepaper_Foundational Large Language models & text gen.p
 FAISS_INDEX_PATH = "cache/vector_store.faiss"
 CHUNK_STORE_PATH = "cache/chunks.pkl"
 
-EMBEDDING_MODEL = "text-embedding-3-small"
+EMBEDDING_MODEL = "text-embedding-3-large"
 GPT_MODEL = "gpt-4o-mini"
