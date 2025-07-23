@@ -11,7 +11,7 @@ def main():
 	"""
 	faiss_index, chunk_texts = load_index(FAISS_INDEX_PATH, CHUNK_STORE_PATH)
 	
-	if faiss_index is None or chunk_text is None:
+	if faiss_index is None or chunk_texts is None:
 		raw_text = parse_pdf(PDF_FILE_PATH)
 		chunks = chunk_text(raw_text)
 
